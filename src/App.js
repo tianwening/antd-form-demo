@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { Layout, Space, Card, Spin } from 'antd'
+import { useMemo, Suspense } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import routes from './routes'
+
+const { Header, Content } = Layout
+
 
 function App() {
+
+  const location = useLocation()
+  const pathname = useMemo(() => location?.pathname, [location])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Layout>
+      <Header>
+        <Space>
+          {routes.map(route => (
+            <Link to={`/${route.path}`}>{route.path}</Link>
+          ))}
+        </Space>
+      </Header>
+      <Content>
+        <Card
+          title={pathname}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Suspense fallback={<Spin />}>
+            <Outlet />
+          </Suspense>
+        </Card>
+      </Content>
+    </Layout>
   );
 }
 
